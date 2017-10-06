@@ -116,37 +116,40 @@
 
 - (void)_adjustBadgeFrameWith
 {
-    CGSize suffixSize = [LK_BADGE_VIEW_TRUNCATED_SUFFIX sizeWithAttributes:
-                         @{NSFontAttributeName: self.font}];
+    if (self.font != nil)
+    {
+        CGSize suffixSize = [LK_BADGE_VIEW_TRUNCATED_SUFFIX sizeWithAttributes:
+                             @{NSFontAttributeName: self.font}];
 
-    CGFloat paddinWidth = LK_BADGE_VIEW_HORIZONTAL_PADDING*2;
-    CGSize size = [self.displayinText sizeWithAttributes:
-                   @{NSFontAttributeName: self.font}];
-    badgeFrame_.size.width = size.width + paddinWidth;
-    
-    if (badgeFrame_.size.width > self.bounds.size.width) {
+        CGFloat paddinWidth = LK_BADGE_VIEW_HORIZONTAL_PADDING*2;
+        CGSize size = [self.displayinText sizeWithAttributes:
+                       @{NSFontAttributeName: self.font}];
+        badgeFrame_.size.width = size.width + paddinWidth;
+        
+        if (badgeFrame_.size.width > self.bounds.size.width) {
 
-        while (1) {
-            size = [self.displayinText sizeWithAttributes:
-                    @{NSFontAttributeName: self.font}];
-            badgeFrame_.size.width = size.width + paddinWidth;
-            if (badgeFrame_.size.width+suffixSize.width > self.bounds.size.width) {
-                if ([self.displayinText length] > 1) {
-                    self.displayinText = [self.displayinText substringToIndex:[self.displayinText length]-2];
+            while (1) {
+                size = [self.displayinText sizeWithAttributes:
+                        @{NSFontAttributeName: self.font}];
+                badgeFrame_.size.width = size.width + paddinWidth;
+                if (badgeFrame_.size.width+suffixSize.width > self.bounds.size.width) {
+                    if ([self.displayinText length] > 1) {
+                        self.displayinText = [self.displayinText substringToIndex:[self.displayinText length]-2];
+                    } else {
+                        self.displayinText = @" ";
+                        break;
+                    }
                 } else {
-                    self.displayinText = @" ";
+                    self.displayinText = [self.displayinText stringByAppendingString:LK_BADGE_VIEW_TRUNCATED_SUFFIX];
+                    badgeFrame_.size.width += suffixSize.width;
                     break;
                 }
-            } else {
-                self.displayinText = [self.displayinText stringByAppendingString:LK_BADGE_VIEW_TRUNCATED_SUFFIX];
-                badgeFrame_.size.width += suffixSize.width;
-                break;
             }
         }
-    }
-    if (self.widthMode == LKBadgeViewWidthModeStandard) {
-        if (badgeFrame_.size.width < LK_BADGE_VIEw_STANDARD_WIDTH) {
-            badgeFrame_.size.width = LK_BADGE_VIEw_STANDARD_WIDTH;
+        if (self.widthMode == LKBadgeViewWidthModeStandard) {
+            if (badgeFrame_.size.width < LK_BADGE_VIEw_STANDARD_WIDTH) {
+                badgeFrame_.size.width = LK_BADGE_VIEw_STANDARD_WIDTH;
+            }
         }
     }
 }
